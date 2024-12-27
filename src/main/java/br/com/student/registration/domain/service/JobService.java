@@ -21,7 +21,7 @@ public class JobService {
 
     public void startJob() {
         try {
-            asyncJobLauncher.run(job, new JobParametersBuilder().addString("file", "500V31").toJobParameters());
+            asyncJobLauncher.run(job, new JobParametersBuilder().addString("file", "500V333").toJobParameters());
             log.info("Job finished");
         } catch (Exception e) {
             log.error(e.getMessage());

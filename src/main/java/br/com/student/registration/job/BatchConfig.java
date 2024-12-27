@@ -30,7 +30,7 @@ public class BatchConfig {
     public FlatFileItemReader<StudentImport> reader() {
         return new FlatFileItemReaderBuilder<StudentImport>()
                 .name("studentReader")
-                .resource(new ClassPathResource("students_500k.csv")).strict(false)
+                .resource(new ClassPathResource("students_50k.csv")).strict(false)
                 .linesToSkip(1)
                 .delimited()
                 .names("name", "email", "phone", "cpf", "age")
@@ -67,8 +67,8 @@ public class BatchConfig {
     @Bean
     public ThreadPoolTaskExecutor threadPoolTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(5);
-        executor.setMaxPoolSize(10);
+        executor.setCorePoolSize(10);
+        executor.setMaxPoolSize(15);
         executor.setQueueCapacity(25);
         executor.setThreadNamePrefix("Batch-Job-");
         executor.initialize();
@@ -98,7 +98,7 @@ public class BatchConfig {
         return new StepBuilder("partitionedStep", jobRepository)
                 .partitioner("step1", new FilePartitioner())
                 .step(multiThreadedStep)
-                .gridSize(10)
+                .gridSize(5)
                 .taskExecutor(taskExecutor())
                 .build();
     }
