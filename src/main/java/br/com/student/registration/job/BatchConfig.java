@@ -44,6 +44,7 @@ public class BatchConfig {
     public JpaItemWriter<Student> writer(EntityManagerFactory entityManagerFactory) {
         JpaItemWriter<Student> writer = new JpaItemWriter<>();
         writer.setEntityManagerFactory(entityManagerFactory);
+        writer.setUsePersist(false);
         return writer;
     }
 
@@ -86,7 +87,7 @@ public class BatchConfig {
                 .faultTolerant()
                 .skip(Exception.class)
                 .skipLimit(10)
-                .listener(threadPoolTaskExecutor())
+                .listener(taskExecutor())
                 .taskExecutor(threadPoolTaskExecutor())
                 .build();
     }
@@ -97,7 +98,7 @@ public class BatchConfig {
         return new StepBuilder("partitionedStep", jobRepository)
                 .partitioner("step1", new FilePartitioner())
                 .step(multiThreadedStep)
-                .gridSize(5)
+                .gridSize(10)
                 .taskExecutor(taskExecutor())
                 .build();
     }
@@ -106,7 +107,7 @@ public class BatchConfig {
     public JobLauncher asyncJobLauncher(JobRepository jobRepository) throws Exception {
         TaskExecutorJobLauncher jobLauncher = new TaskExecutorJobLauncher();
         jobLauncher.setJobRepository(jobRepository);
-        jobLauncher.setTaskExecutor(taskExecutor());
+        jobLauncher.setTaskExecutor(threadPoolTaskExecutor());
         jobLauncher.afterPropertiesSet();
         return jobLauncher;
     }
